@@ -9,3 +9,15 @@ save*.yml
 /.svn/*
 *.exec
 dependency-reduced-pom.xml
+
+.classpath
+
+.project
+
+.settings/org.eclipse.core.resources.prefs
+
+.settings/org.eclipse.jdt.core.prefs
+
+.settings/org.eclipse.m2e.core.prefs
+
+can_talon_diff.txt
