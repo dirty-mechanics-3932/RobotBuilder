@@ -244,6 +244,10 @@ Instructions:
     Defaults: "Component,None"
     ClassName: "CANJaguar"
     Construction: "#variable($Name) = new ${ClassName}($CAN_ID);"
+  CAN TalonSRX:
+    Defaults: "Component,None"
+    ClassName: "CANTalon"
+    Construction: "#variable($Name) = new ${ClassName}($CAN_ID);"
   Servo:
     Defaults: "PWMOutput,Component,None"
     ClassName: "Servo"
