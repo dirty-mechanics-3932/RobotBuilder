@@ -5,10 +5,13 @@
 package robotbuilder.data.properties;
 
 import java.util.Vector;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+
 import robotbuilder.data.RobotComponent;
+import robotbuilder.robottree.RobotTree;
 
 /**
  *
@@ -63,7 +66,9 @@ public class TypeSelectionProperty extends Property {
         super.update();
         Object selection = getValue();
         if (valueComponent != null) { selection = valueComponent.getFullName(); }
-        Vector<String> options = component.getRobotTree().getRoot().getChildrenOfTypeNames(type);
+        RobotTree robotTree = component.getRobotTree();
+		RobotComponent root = robotTree.getRoot();
+		Vector<String> options = root.getChildrenOfTypeNames(type);
         options.add(0, defaultValue.toString());
         if (combo == null) {
             combo = new JComboBox(options);

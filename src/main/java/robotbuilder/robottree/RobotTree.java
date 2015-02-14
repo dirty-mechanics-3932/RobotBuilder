@@ -9,12 +9,15 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.*;
+
 import org.yaml.snakeyaml.Yaml;
+
 import robotbuilder.MainFrame;
 import robotbuilder.palette.Palette;
 import robotbuilder.PropertiesDisplay;
@@ -342,18 +345,36 @@ public class RobotTree extends JPanel implements TreeSelectionListener {
             root.visit(new RobotVisitor() {
                 @Override
                 public Object visit(RobotComponent self, Object...extra) {
+                	if (self == null) {
+                		throw new RuntimeException("self is null!");
+                	}
                     Map<String, Object> details = (Map<String, Object>) extra[0];
+                    if (details == null) {
+                    	throw new RuntimeException("details is null!");
+                	}
                     self.setRobotTree(robot);
                     self.setName((String) details.get("Name"));
                     self.setBaseType((String) details.get("Base"));
                     self.setProperties((Map<String, Property>) details.get("Properties"));
-                    for (String propertyName : self.getBase().getPropertiesKeys()) {
-                        Object value = self.getProperties().get(propertyName);
+                    PaletteComponent base = self.getBase();
+					for (String propertyName : base.getPropertiesKeys()) {
+                        Map<String, Property> propertyForName = self.getProperties();
+                        if (propertyForName == null) {
+                        	throw new RuntimeException("Missing properties for " + self);
+                        }
+						Object value = propertyForName.get(propertyName);
+						if (value == null) {
+							throw new RuntimeException("Skipped missing property " + propertyName);
+						}
                         if (value != null) value = ((Property) value).getValue();
-                        Property property = self.getBase().getProperty(propertyName).copy();
-                        property.setComponent(self);
+                        Property property = base.getProperty(propertyName).copy();
+                        if (property == null) { 
+                        	throw new RuntimeException("Skipped missing property " + propertyName);
+                        } else {
+                        	property.setComponent(self);
+                        }
                         if (value != null) property._setValue(value);
-                        self.getProperties().put(propertyName, property);
+                        propertyForName.put(propertyName, property);
                     }
                     for (Object childDescription : (List) details.get("Children")) {
                         RobotComponent child = new RobotComponent();
